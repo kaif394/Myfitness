@@ -18,6 +18,9 @@ RUN rm -rf /var/lib/apt/lists/*
 # Install PHP extensions
 RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd
 
+# Enable PHP extensions (explicitly, just in case)
+RUN docker-php-ext-enable pdo_pgsql
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
