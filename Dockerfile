@@ -37,9 +37,13 @@ RUN composer install --no-dev --optimize-autoloader
 # This is usually handled by environment variables on Render, but good for local Docker builds
 # RUN php artisan key:generate
 
-# Run migrations and seeders
-RUN php artisan migrate --force
-RUN php artisan db:seed --force
+    # Clear config and cache to ensure environment variables are picked up
+    RUN php artisan config:clear
+    RUN php artisan cache:clear
+
+    # Run migrations and seeders
+    RUN php artisan migrate --force
+    RUN php artisan db:seed --force
 
 # Configure Apache for Laravel
 COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
