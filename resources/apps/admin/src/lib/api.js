@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { PUBLIC_API_URL } from '$env/static/public';
+
 
 import axios from 'axios';
 
@@ -25,5 +25,5 @@ export const getBearerToken = () => {
 };
 
 export const useApi = (headers = {}) => {
-	return axios.create({ headers, baseURL: PUBLIC_API_URL + '/api' });
+	return axios.create({ headers, baseURL: import.meta.env.VITE_PUBLIC_API_URL + '/api' });
 };
