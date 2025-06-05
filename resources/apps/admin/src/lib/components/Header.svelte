@@ -22,7 +22,7 @@
 					</svg>
 				</span>
 			</button>
-			<strong class="text-xl text-white">laragym</strong>
+			<strong class="text-xl text-white">MYFITNESS</strong>
 		</div>
 	</svelte:fragment>
 </AppBar>
