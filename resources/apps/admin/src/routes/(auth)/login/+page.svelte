@@ -4,6 +4,7 @@
 	import { useToast } from '$lib/toast';
 
 	import axios from 'axios';
+	import Cookies from 'js-cookie';
 
 	const toast = useToast();
 
@@ -14,8 +15,17 @@
 	const onSubmit = (event) => {
 		event.preventDefault();
 		if (loading) return;
-		axios
-			.post('/login', fields)
+		loading = true;
+		axios.get('http://localhost:8000/sanctum/csrf-cookie', { withCredentials: true })
+			.then(() => {
+				const xsrfToken = Cookies.get('XSRF-TOKEN');
+				return axios.post('http://localhost:8000/api/auth/login', fields, {
+					withCredentials: true,
+					headers: {
+						'X-XSRF-TOKEN': xsrfToken
+					}
+				});
+			})
 			.then(() => {
 				toast.trigger({
 					message: 'You have successfully logged in. Redirecting...',
@@ -24,6 +34,7 @@
 				setTimeout(() => (window.location.href = '/'), 1500);
 			})
 			.catch((error) => {
+				console.error('Login error:', error, error?.response);
 				toast.trigger({
 					message: 'Unable to logged you in',
 					background: 'variant-filled-error'

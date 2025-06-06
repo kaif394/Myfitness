@@ -74,3 +74,22 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+## 🚀 Deploying to Render.com (Free)
+
+1. **Push this Laravel project to a new GitHub repository.**
+2. **Sign up at [Render.com](https://render.com/) and click 'New Web Service'.**
+3. **Connect your GitHub repo.**
+4. **Set environment:**
+   - Runtime: PHP
+   - Build Command: `composer install && php artisan key:generate && php artisan migrate --force && php artisan storage:link`
+   - Start Command: `php artisan serve --host 0.0.0.0 --port 10000`
+5. **Add environment variables:** Copy from `.env.example` (do NOT commit secrets) and fill in values in Render's dashboard.
+6. **Set the service to listen on port `10000` (Render default for PHP).**
+7. **Deploy!**
+
+- For database, use Render's free PostgreSQL or MySQL add-on, or connect your own.
+- After deployment, your backend will be available at a public URL (e.g., `https://your-app.onrender.com`).
+- Update your Svelte frontend to use this backend URL.
