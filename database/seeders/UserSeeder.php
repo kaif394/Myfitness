@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->truncate();
+        DB::statement('TRUNCATE TABLE users RESTART IDENTITY CASCADE');
 
         $faker = \Faker\Factory::create();
         User::create([
