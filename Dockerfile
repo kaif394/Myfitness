@@ -41,9 +41,6 @@ RUN composer install --no-dev --optimize-autoloader
     RUN php artisan config:clear
     RUN php artisan cache:clear
 
-    # Run migrations and seeders
-    RUN php artisan migrate --force
-    RUN php artisan db:seed --force
 
 # Configure Apache for Laravel
 COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
