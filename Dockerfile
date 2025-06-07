@@ -30,6 +30,9 @@ WORKDIR /var/www/html
 # Copy application code
 COPY . .
 
+# Fix permissions for storage and cache (required for Laravel on Render)
+RUN chmod -R 775 storage bootstrap/cache
+
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader
 
