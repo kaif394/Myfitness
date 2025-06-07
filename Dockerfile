@@ -30,8 +30,8 @@ WORKDIR /var/www/html
 # Copy application code
 COPY . .
 
-# Fix permissions for storage and cache (required for Laravel on Render)
-RUN chmod -R 775 storage bootstrap/cache
+# Fix ownership and permissions for storage and cache (required for Laravel on Render)
+RUN chown -R www-data:www-data storage bootstrap/cache && chmod -R 775 storage bootstrap/cache
 
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader
