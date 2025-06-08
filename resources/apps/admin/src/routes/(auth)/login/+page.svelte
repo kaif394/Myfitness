@@ -6,6 +6,7 @@
 	import axios from 'axios';
 	import Cookies from 'js-cookie';
 	import { PUBLIC_API_URL } from '$env/static/public';
+console.log('PUBLIC_API_URL at runtime:', PUBLIC_API_URL);
 
 console.log('PUBLIC_API_URL:', PUBLIC_API_URL);
 
