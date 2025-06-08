@@ -65,15 +65,14 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R ug+rwx /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Clear and rebuild Laravel caches for production
-# Run these after composer install and permissions are set
+# Clear and then re-cache configurations, routes, and views
+# This should run if code copied by 'COPY .' changes, including .env
 RUN php artisan config:clear \
     && php artisan route:clear \
     && php artisan view:clear \
+    && php artisan event:clear \
     && php artisan cache:clear \
-    && php artisan event:clear
-
-RUN php artisan config:cache \
+    && php artisan config:cache \
     && php artisan route:cache \
     && php artisan view:cache
 
