@@ -17,6 +17,8 @@ class UserSeeder extends Seeder
     {
         // Truncate dependent tables first, then users, to avoid FK issues
         DB::statement('TRUNCATE TABLE profiles, subscriptions, user_branch, users RESTART IDENTITY CASCADE');
+        // Reset the users.id sequence so the next value is 2 (after admin with id=1)
+        DB::statement("ALTER SEQUENCE users_id_seq RESTART WITH 2");
 
         $faker = \Faker\Factory::create();
         User::create([
