@@ -5,6 +5,9 @@
 
 	import axios from 'axios';
 	import Cookies from 'js-cookie';
+	import { PUBLIC_API_URL } from '$env/static/public';
+
+console.log('PUBLIC_API_URL:', PUBLIC_API_URL);
 
 	const toast = useToast();
 
@@ -16,10 +19,10 @@
 		event.preventDefault();
 		if (loading) return;
 		loading = true;
-		axios.get('http://localhost:8000/sanctum/csrf-cookie', { withCredentials: true })
+		axios.get(`${PUBLIC_API_URL}/sanctum/csrf-cookie`, { withCredentials: true })
 			.then(() => {
 				const xsrfToken = Cookies.get('XSRF-TOKEN');
-				return axios.post('http://localhost:8000/api/auth/login', fields, {
+				return axios.post(`${PUBLIC_API_URL}/api/auth/login`, fields, {
 					withCredentials: true,
 					headers: {
 						'X-XSRF-TOKEN': xsrfToken
