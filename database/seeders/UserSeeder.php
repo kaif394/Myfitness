@@ -15,7 +15,8 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('TRUNCATE TABLE users RESTART IDENTITY CASCADE');
+        // Truncate dependent tables first, then users, to avoid FK issues
+        DB::statement('TRUNCATE TABLE profiles, subscriptions, user_branch, users RESTART IDENTITY CASCADE');
 
         $faker = \Faker\Factory::create();
         User::create([
