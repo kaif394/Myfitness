@@ -22,6 +22,7 @@ return [
     'allowed_origins' => [
         'http://localhost:5173',
         'https://myfitness-frontend.vercel.app',
+        'https://myfitness-frontend-bld7yeh2-kaif394s-projects.vercel.app',
     ],
 
     'allowed_origins_patterns' => [],
