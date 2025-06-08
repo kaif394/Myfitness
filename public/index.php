@@ -4,6 +4,7 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
+throw new \Exception('Deliberate Test Exception from index.php');
 
 /*
 |--------------------------------------------------------------------------
