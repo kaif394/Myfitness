@@ -23,6 +23,7 @@ return [
         'http://localhost:5173',
         'https://myfitness-frontend.vercel.app',
         'https://myfitness-frontend-bld7yeh2-kaif394s-projects.vercel.app',
+        'https://myfitness-frontend-1kmttagjx-kaif394s-projects.vercel.app',
     ],
 
     'allowed_origins_patterns' => [],
