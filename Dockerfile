@@ -1,25 +1,25 @@
-# Use the official PHP image with Apache
+# Use an official PHP runtime as a parent image with Apache
 FROM php:8.2-apache
 
-# Install system dependencies
+# Set environment variables for non-interactive installs
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system dependencies and common PHP extensions for Laravel
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
-    libonig-dev \
-    libxml2-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
     zip \
     unzip \
-    libpq-dev
-
-# Clear cache
-RUN rm -rf /var/lib/apt/lists/*
-
-# Install PHP extensions
-RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd
-
-# Enable PHP extensions (explicitly, just in case)
-RUN docker-php-ext-enable pdo_pgsql
+    libpq-dev \
+    libxml2-dev \
+    libonig-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd pdo_pgsql pgsql zip bcmath exif pcntl tokenizer xml mbstring \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -27,36 +27,58 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application code
-COPY . .
+# Copy application files
+COPY . /var/www/html/
 
-# Fix ownership and permissions for storage and cache (required for Laravel on Render)
-RUN chown -R www-data:www-data storage bootstrap/cache && chmod -R 775 storage bootstrap/cache
+# Copy custom PHP configuration for error logging
+COPY php-custom.ini /usr/local/etc/php/conf.d/zz-php-custom.ini
 
-# Install Composer dependencies
+# Configure Apache
+RUN a2enmod rewrite
+# Set ServerName globally in Apache's main configuration file to suppress warnings
+RUN echo "ServerName laragym-backend.onrender.com" >> /etc/apache2/apache2.conf
+
+# Update Apache virtual host configuration to point to Laravel's public directory
+# and ensure AllowOverride All is set for .htaccess to work.
+COPY <<EOF /etc/apache2/sites-available/000-default.conf
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html/public
+
+    <Directory /var/www/html/public>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog \${APACHE_LOG_DIR}/error.log
+    CustomLog \${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+EOF
+
+# Install Composer dependencies (after copying files and setting up Apache/PHP config)
 RUN composer install --no-dev --optimize-autoloader
 
-# Generate application key (if not already set in .env)
-# This is usually handled by environment variables on Render, but good for local Docker builds
-# RUN php artisan key:generate
+# Set permissions for Laravel storage and cache directories
+# This ensures that the web server (www-data) can write to these directories.
+# Run this after composer install as vendor files might be needed by artisan commands.
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R ug+rwx /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Clear and rebuild Laravel caches for production
-RUN php artisan config:clear
-RUN php artisan route:clear
-RUN php artisan view:clear
-RUN php artisan cache:clear
-RUN php artisan event:clear
+# Run these after composer install and permissions are set
+RUN php artisan config:clear \
+    && php artisan route:clear \
+    && php artisan view:clear \
+    && php artisan cache:clear \
+    && php artisan event:clear
 
-RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
+RUN php artisan config:cache \
+    && php artisan route:cache \
+    && php artisan view:cache
 
-# Configure Apache for Laravel
-COPY docker/000-default.conf /etc/apache2/sites-available/000-default.conf
-RUN a2enmod rewrite
-
-# Expose port 80 (Apache default)
+# Expose port 80
 EXPOSE 80
 
-# Start Apache server
+# Start Apache in the foreground
 CMD ["apache2-foreground"]
