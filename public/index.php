@@ -5,6 +5,21 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// Temporary debug: Check APP_KEY
+error_log('Attempting to read APP_KEY from env: ' . (env('APP_KEY') ? 'FOUND' : 'NOT FOUND'));
+if (env('APP_KEY')) {
+    error_log('APP_KEY value (first 10 chars): ' . substr(env('APP_KEY'), 0, 10));
+    error_log('APP_KEY full value (for verification, remove after test): ' . env('APP_KEY')); // Be cautious with logging full keys
+} else {
+    error_log('APP_KEY is not found using env(). Trying getenv().');
+    error_log('Attempting to read APP_KEY from getenv: ' . (getenv('APP_KEY') ? 'FOUND' : 'NOT FOUND'));
+    if (getenv('APP_KEY')) {
+         error_log('APP_KEY value via getenv (first 10 chars): ' . substr(getenv('APP_KEY'), 0, 10));
+         error_log('APP_KEY full value via getenv (for verification, remove after test): ' . getenv('APP_KEY'));
+    }
+}
+// End Temporary debug
+
 /*
 |--------------------------------------------------------------------------
 | Check If The Application Is Under Maintenance
