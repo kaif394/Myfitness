@@ -22,14 +22,11 @@ return [
     'allowed_origins' => [
         'https://myfitness-frontend.vercel.app', // Production
         'http://localhost:5173',                // Local dev
-        // Add any Vercel preview URLs below as needed
-        'https://myfitness-frontend-9cfznnr1v-kaif394s-projects.vercel.app',
-        'https://myfitness-frontend-3e6y5cgwk-kaif394s-projects.vercel.app',
-        'https://myfitness-frontend-bld7yeh2-kaif394s-projects.vercel.app',
-        'https://myfitness-frontend-1kmttagjx-kaif394s-projects.vercel.app',
     ],
-
-    'allowed_origins_patterns' => [],
+    // Allow all Vercel preview URLs (wildcard)
+    'allowed_origins_patterns' => [
+        '/^https:\/\/myfitness-frontend-.*-kaif394s-projects\.vercel\.app$/',
+    ],
     'allowed_headers' => ['*'],
     'exposed_headers' => [],
     'max_age' => 0,
