@@ -70,11 +70,12 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 RUN php artisan config:clear \
     && php artisan route:clear \
     && php artisan view:clear \
+    && php artisan cache:clear \
     && php artisan event:clear \
-    && php artisan cache:clear
+    && rm -f bootstrap/cache/*.php
 # RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
+# RUN php artisan route:cache
+# RUN php artisan view:cache
 
 # Expose port 80
 EXPOSE 80
